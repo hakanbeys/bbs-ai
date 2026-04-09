@@ -1,0 +1,95 @@
+package mchorse.bbs_mod.ai.client;
+
+import java.util.Base64;
+
+public class AIMessage
+{
+    public enum Role
+    {
+        SYSTEM, USER, ASSISTANT, TOOL
+    }
+
+    private final Role role;
+    private final String content;
+    private final String toolCallId;
+    private final String toolName;
+
+    /* For image attachments */
+    private String imageBase64;
+    private String imageMimeType;
+
+    public AIMessage(Role role, String content)
+    {
+        this(role, content, null, null);
+    }
+
+    public AIMessage(Role role, String content, String toolCallId, String toolName)
+    {
+        this.role = role;
+        this.content = content;
+        this.toolCallId = toolCallId;
+        this.toolName = toolName;
+    }
+
+    public static AIMessage system(String content)
+    {
+        return new AIMessage(Role.SYSTEM, content);
+    }
+
+    public static AIMessage user(String content)
+    {
+        return new AIMessage(Role.USER, content);
+    }
+
+    public static AIMessage assistant(String content)
+    {
+        return new AIMessage(Role.ASSISTANT, content);
+    }
+
+    public static AIMessage toolResult(String toolCallId, String toolName, String content)
+    {
+        return new AIMessage(Role.TOOL, content, toolCallId, toolName);
+    }
+
+    public Role getRole()
+    {
+        return this.role;
+    }
+
+    public String getContent()
+    {
+        return this.content;
+    }
+
+    public String getToolCallId()
+    {
+        return this.toolCallId;
+    }
+
+    public String getToolName()
+    {
+        return this.toolName;
+    }
+
+    public boolean hasImage()
+    {
+        return this.imageBase64 != null;
+    }
+
+    public String getImageBase64()
+    {
+        return this.imageBase64;
+    }
+
+    public String getImageMimeType()
+    {
+        return this.imageMimeType;
+    }
+
+    public AIMessage withImage(byte[] imageData, String mimeType)
+    {
+        this.imageBase64 = Base64.getEncoder().encodeToString(imageData);
+        this.imageMimeType = mimeType;
+        return this;
+    }
+}
